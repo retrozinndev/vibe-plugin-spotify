@@ -1,0 +1,5 @@
+@types
+node_modules
+build
+pnpm-lock.yaml
+pnpm-workspace.yaml

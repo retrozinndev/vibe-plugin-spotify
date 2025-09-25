@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "vibe-plugin-name",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "A nice plugin for the Vibe Music Player!",
+  "scripts": {
+    "build": "sh ./scripts/build.sh",
+    "build:release": "sh ./scripts/release.sh",
+    "release": "sh ./scripts/release.sh",
+    "clean": "sh ./scripts/clean.sh",
+    "types": "sh ./scripts/types.sh"
+  },
+  "keywords": [
+    "plugin",
+    "music",
+    "vibe-music-player"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "gnim": "^1.6.3",
+    "libvibe": "link:./lib"
+  }
+}
