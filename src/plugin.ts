@@ -2,49 +2,52 @@ import Gio from "gi://Gio?version=2.0";
 
 import { Plugin, Section } from "libvibe";
 import { register } from "gnim/gobject";
+import { MaxInt, SpotifyApi } from "@spotify/web-api-ts-sdk";
+import GLib from "gi://GLib?version=2.0";
 
 
-// For Vibe to detect the plugin's code, its class must be implemented as `default`
-// also, you may not change the plugin's class name, use the `name` prop instead.
-// otherwise, Vibe won't detect the plugin!
-@register() // register plugin in GObject
+/** Spotify Plugin for the Vibe Music Player
+  * This is a plugin that allows(will allow) to stream
+  * songs from the Spotify servers, and also managing playlists.
+  * Jams and special online connection functions won't be 
+  * implemented by the plugin, at least for now. */
+
+@register()
 class VibePlugin extends Plugin {
+    #clientId = "23c3c810f05e4861b525995ef6b1e15c";
+    #redirectUri = "http://127.0.0.1:1213";
+    spotify!: SpotifyApi;
+    locale: string = GLib.getenv("LANG") ?? GLib.getenv("LANGUAGE") ?? "en_US";
+
     constructor() {
         super({
-            name: "Vibe Plugin", // plugin name
-            version: VIBE_PLUGIN_VERSION, // plugin version (retrieved from package.json automatically on compile-time, no need to change this)
-            description: "A nice plugin for the Vibe Music Player!", // description of the plugin
-            url: "https://github.com/retrozinndev/vibe-plugin", // url where you can get more info about the plugin(or its repo)
-            implements: { // features that the plugin implement
-                sections: true
+            name: "Spotify",
+            version: VIBE_PLUGIN_VERSION,
+            description: "Spotify Account plugin for the Vibe Music Player",
+            url: "https://github.com/retrozinndev/vibe-plugin-spotify",
+            implements: {
+                sections: true,
+                search: true
             }
         });
+
+        SpotifyApi.performUserAuthorization(
+            this.#clientId,
+            this.#redirectUri,
+            [ "scope1" ],
+            async (token) => {
+                this.spotify = SpotifyApi.withAccessToken(this.#clientId, token);
+            }, {}
+        );
     }
 
-    // the sections feature should be implemented like this:
-    getSections(_length?: number): Array<Section> | null {
-        return [ // example sections
-            {
-                title: "Section 1",
-                description: "This section is pretty nice!",
-                headerButtons: [{
-                    label: "See developer's website",
-                    onClicked: () => Gio.Subprocess.new([
-                        "xdg-open",
-                        "https://retrozinndev.github.io"
-                    ], Gio.SubprocessFlags.NONE)
-                }]
-            },
-            {
-                title: "Section 2",
-                description: "Looking nice, section 2!!"
-            }
-        ];
+    getSections(length?: MaxInt<50>): Array<Section> | null {
+        return this.spotify.browse.getCategories(
+            "BR", this.locale, length ?? 10, undefined
+        );
     }
 }
 
 
-// register plugin on `window` object, so esbuild doesn't remove it
-// this is development only: the final build won't have this line.
 // @ts-ignore
 window.plugin = VibePlugin;

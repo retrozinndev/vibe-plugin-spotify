@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "vibe-plugin-name",
+  "name": "vibe-plugin-spotify",
   "version": "0.0.1",
   "type": "module",
-  "description": "A nice plugin for the Vibe Music Player!",
+  "description": "Spotify Account plugin for the Vibe Music Player",
   "scripts": {
     "build": "sh ./scripts/build.sh",
     "build:release": "sh ./scripts/release.sh",
@@ -20,7 +20,8 @@
   "license": "MIT",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
-    "gnim": "^1.6.3",
-    "libvibe": "link:./lib"
+    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "gnim": "^1.8.0",
+    "libvibe": "link:lib"
   }
 }
