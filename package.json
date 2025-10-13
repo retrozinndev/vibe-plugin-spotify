@@ -22,6 +22,6 @@
   "dependencies": {
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "gnim": "^1.8.0",
-    "libvibe": "link:lib"
+    "libvibe": "github:retrozinndev/libvibe"
   }
 }
