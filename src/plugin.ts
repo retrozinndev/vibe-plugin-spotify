@@ -1,17 +1,17 @@
-import Gio from "gi://Gio?version=2.0";
-
-import { Plugin, Section } from "libvibe";
-import { register } from "gnim/gobject";
-import { MaxInt, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import GLib from "gi://GLib?version=2.0";
 
+import type { Section } from "libvibe";
+import { register } from "gnim/gobject";
+import { MaxInt, SpotifyApi } from "@spotify/web-api-ts-sdk";
+
+
+const { Plugin } = libvibe;
 
 /** Spotify Plugin for the Vibe Music Player
   * This is a plugin that allows(will allow) to stream
   * songs from the Spotify servers, and also managing playlists.
   * Jams and special online connection functions won't be 
   * implemented by the plugin, at least for now. */
-
 @register()
 class VibePlugin extends Plugin {
     #clientId = "23c3c810f05e4861b525995ef6b1e15c";
@@ -41,10 +41,14 @@ class VibePlugin extends Plugin {
         );
     }
 
-    getSections(length?: MaxInt<50>): Array<Section> | null {
-        return this.spotify.browse.getCategories(
-            "BR", this.locale, length ?? 10, undefined
-        );
+    async getSections(length?: MaxInt<50>, offset?: number): Promise<Array<Section> | null> {
+        return (await this.spotify.browse.getCategories(
+            "BR", this.locale, length ?? 10, offset ?? 0
+        )).categories.items.map((item) => ({
+            title: item.name,
+            type: "row",
+            content: []
+        } satisfies Section));
     }
 }
 
